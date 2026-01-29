@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barış Perveroğlu | Senior QA Automation Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        'cyber-black': '#0a0a0f',
+                        'cyber-dark': '#12121a',
+                        'cyber-gray': '#1a1a2e',
+                        'neon-cyan': '#00f0ff',
+                        'neon-green': '#00ff9d',
+                        'neon-purple': '#b829dd',
+                        'neon-yellow': '#f0e800',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0a0f;
+            color: #e2e8f0;
+            cursor: none;
+            overflow-x: hidden;
+        }
+        
+        .cursor-dot, .cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        
+        .cursor-dot { width: 5px; height: 5px; background-color: #00f0ff; }
+        .cursor-outline { width: 30px; height: 30px; border: 2px solid rgba(0, 240, 255, 0.5); transition: all 0.2s; }
+        .cursor-outline.hover { width: 60px; height: 60px; background-color: rgba(0, 240, 255, 0.1); border-color: #00f0ff; }
+        
+        .grid-bg {
+            background-image: linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+        
+        .bento-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        .bento-card:hover::before { left: 100%; }
+        .bento-card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(0, 240, 255, 0.2);
+        }
+        
+        .glitch { position: relative; }
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+        .glitch::before { left: 2px; text-shadow: -1px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim 5s infinite linear alternate-reverse; }
+        .glitch::after { left: -2px; text-shadow: -1px 0 #00fff9; clip: rect(44px, 450px, 56px, 0); animation: glitch-anim2 5s infinite linear alternate-reverse; }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); } 20% { clip: rect(54px, 9999px, 96px, 0); } 40% { clip: rect(70px, 9999px, 99px, 0); } 60% { clip: rect(3px, 9999px, 63px, 0); } 80% { clip: rect(37px, 9999px, 95px, 0); } 100% { clip: rect(69px, 9999px, 82px, 0); }
+        }
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); } 20% { clip: rect(93px, 9999px, 4px, 0); } 40% { clip: rect(26px, 9999px, 100px, 0); } 60% { clip: rect(11px, 9999px, 14px, 0); } 80% { clip: rect(63px, 9999px, 46px, 0); } 100% { clip: rect(23px, 9999px, 79px, 0); }
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0; left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00f0ff, #00ff9d);
+            z-index: 1000;
+            transition: width 0.1s;
+        }
+        
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: #00ff9d;
+            box-shadow: 0 0 10px #00ff9d;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        .project-card { transition: all 0.3s ease; }
+        .project-card:hover { transform: translateY(-5px); }
+        .project-card:hover .project-image { transform: scale(1.05); }
+        
+        .floating-tag {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neon-cyan selection:text-cyber-black">
+
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="cursor-dot hidden md:block"></div>
+    <div class="cursor-outline hidden md:block"></div>
+    <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+    
+    <div class="fixed top-20 left-10 w-64 h-64 bg-neon-cyan/5 rounded-full blur-3xl pointer-events-none floating-tag z-0"></div>
+    <div class="fixed bottom-20 right-10 w-96 h-96 bg-neon-purple/5 rounded-full blur-3xl pointer-events-none floating-tag z-0" style="animation-delay: 2s;"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 top-0 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center backdrop-blur-md bg-cyber-black/50 border border-white/5 rounded-full px-6 py-3">
+                <a href="#" class="font-mono font-bold text-xl tracking-tighter text-white group">
+                    <span class="text-neon-cyan">&lt;</span>Barış<span class="text-neon-green">/&gt;</span>
+                </a>
+                
+                <div class="hidden md:flex gap-8 font-mono text-sm">
+                    <a href="#about" class="nav-link hover:text-neon-cyan transition-colors">01.About</a>
+                    <a href="#experience" class="nav-link hover:text-neon-cyan transition-colors">02.Experience</a>
+                    <a href="#skills" class="nav-link hover:text-neon-cyan transition-colors">03.Skills</a>
+                    <a href="#projects" class="nav-link hover:text-neon-cyan transition-colors">04.Projects</a>
+                    <a href="#contact" class="nav-link hover:text-neon-cyan transition-colors">05.Contact</a>
+                </div>
+                
+                <button onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" 
+                        class="hidden md:block px-6 py-2 border border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-cyber-black transition-all duration-300 rounded-full font-mono text-sm font-medium">
+                    Hire Me
+                </button>
+                
+                <button class="md:hidden text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+            
+            <div id="mobile-menu" class="hidden md:hidden mt-4 backdrop-blur-xl bg-cyber-black/90 border border-white/10 rounded-2xl p-6">
+                <div class="flex flex-col gap-4 font-mono">
+                    <a href="#about" class="text-white hover:text-neon-cyan">01.About</a>
+                    <a href="#experience" class="text-white hover:text-neon-cyan">02.Experience</a>
+                    <a href="#skills" class="text-white hover:text-neon-cyan">03.Skills</a>
+                    <a href="#projects" class="text-white hover:text-neon-cyan">04.Projects</a>
+                    <a href="#contact" class="text-white hover:text-neon-cyan">05.Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative px-6 pt-20" id="about">
+        <div class="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6 z-10">
+                <div class="font-mono text-neon-cyan text-sm tracking-widest reveal">
+                    <span class="status-dot"></span>AVAILABLE FOR OPPORTUNITIES
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-bold leading-tight reveal" style="transition-delay: 0.1s;">
+                    Senior <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-green glitch" data-text="QA">QA</span><br>
+                    Automation<br>
+                    Engineer
+                </h1>
+                
+                <p class="text-gray-400 text-lg md:text-xl max-w-lg leading-relaxed reveal" style="transition-delay: 0.2s;">
+                    Building robust, scalable automation frameworks for global enterprises. 
+                    Specialized in <span class="text-neon-cyan font-mono">Java</span>, 
+                    <span class="text-neon-green font-mono">API Testing</span>, and 
+                    <span class="text-neon-purple font-mono">AI-Powered QA</span>.
+                </p>
+                
+                <div class="flex gap-4 pt-4 reveal" style="transition-delay: 0.3s;">
+                    <a href="#projects" class="group relative px-8 py-4 bg-neon-cyan text-cyber-black font-bold font-mono rounded-lg overflow-hidden">
+                        <span class="relative z-10">View Projects</span>
+                        <div class="absolute inset-0 bg-neon-green transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                    </a>
+                    <a href="https://github.com/barispe" target="_blank" class="px-8 py-4 border border-white/20 hover:border-neon-cyan text-white font-mono rounded-lg transition-colors flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        GitHub
+                    </a>
+                </div>
+            </div>
+            
+            <div class="relative reveal hidden md:block" style="transition-delay: 0.4s;">
+                <div class="bg-cyber-dark/80 border border-neon-cyan/20 rounded-lg p-6 shadow-2xl">
+                    <div class="flex items-center gap-2 mb-4 border-b border-white/10 pb-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="ml-4 font-mono text-xs text-gray-500">baris@mercedes-benz: ~/automation-framework</span>
+                    </div>
+                    <div class="font-mono text-sm space-y-1">
+                        <div class="text-gray-500">$ java -version</div>
+                        <div class="text-neon-green">openjdk version "17.0.8" 2023-07-18 LTS</div>
+                        <div class="text-gray-500 mt-2">$ mvn clean test</div>
+                        <div class="text-neon-cyan">Tests run: 847, Failures: 0, Errors: 0, Skipped: 0</div>
+                        <div class="text-neon-green">BUILD SUCCESS</div>
+                        <div class="text-gray-400 mt-2 animate-pulse">_</div>
+                    </div>
+                </div>
+                <div class="absolute -right-4 -top-4 bento-card p-4 rounded-lg floating-tag">
+                    <div class="text-2xl font-bold text-neon-cyan">5+</div>
+                    <div class="text-xs text-gray-400 font-mono">Years Exp.</div>
+                </div>
+                <div class="absolute -left-4 bottom-12 bento-card p-4 rounded-lg floating-tag" style="animation-delay: 1s;">
+                    <div class="text-2xl font-bold text-neon-green">70%</div>
+                    <div class="text-xs text-gray-400 font-mono">Defect Reduction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section (Condensed for brevity but complete) -->
+    <section class="py-20 px-6 bg-cyber-dark/30" id="experience">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-lg block mb-2">02.</span>
+                Work Experience
+            </h2>
+            
+            <div class="space-y-8">
+                <!-- Mercedes -->
+                <div class="bento-card rounded-2xl p-8 reveal border-l-4 border-neon-cyan">
+                    <div class="flex flex-col md:flex-row justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Senior Quality Assurance Engineer</h3>
+                            <div class="text-neon-cyan font-mono text-lg">Mercedes-Benz</div>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">Feb 2023 - Present</span>
+                    </div>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Built modular test frameworks cutting feedback cycles by 50%</li>
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Automated 500+ test cases, reducing production defects by 70%</li>
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Leading AI project using LangChain + OpenAI to build automation agents</li>
+                    </ul>
+                </div>
+                
+                <!-- Garanti BBVA -->
+                <div class="bento-card rounded-2xl p-8 reveal border-l-4 border-neon-purple" style="transition-delay: 0.1s;">
+                    <div class="flex flex-col md:flex-row justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Test Automation Engineer</h3>
+                            <div class="text-neon-purple font-mono text-lg">Garanti BBVA</div>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">Oct 2022 - Feb 2023</span>
+                    </div>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Designed 200+ API-level tests using RestAssured</li>
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Achieved 95% automated test coverage</li>
+                    </ul>
+                </div>
+                
+                <!-- Turkcell -->
+                <div class="bento-card rounded-2xl p-8 reveal border-l-4 border-neon-yellow" style="transition-delay: 0.2s;">
+                    <div class="flex flex-col md:flex-row justify-between mb-4">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">QA Engineer</h3>
+                            <div class="text-neon-yellow font-mono text-lg">Turkcell via NETAS</div>
+                        </div>
+                        <span class="text-gray-500 font-mono text-sm mt-2 md:mt-0">Jun 2020 - Oct 2022</span>
+                    </div>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Maintained 2,500+ Mobile, Web, API test cases</li>
+                        <li class="flex items-start gap-2"><span class="text-neon-green mt-1">▹</span> Migrated 300 Postman tests to Java + RestAssured</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section (Complete) -->
+    <section class="py-20 px-6" id="skills">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold mb-16 reveal">
+                <span class="text-neon-cyan font-mono text-lg block mb-2">03.</span>
+                Technical Stack
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Languages -->
+                <div class="bento-card rounded-2xl p-6 reveal">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-neon-cyan rounded-full"></span>
+                        Languages
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Java</span><span class="text-neon-cyan font-mono">95%</span></div>
+                        <div class="h-1 bg-cyber-black rounded-full"><div class="h-full bg-neon-cyan w-[95%] rounded-full"></div></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">Python</span><span class="text-neon-cyan font-mono">85%</span></div>
+                        <div class="h-1 bg-cyber-black rounded-full"><div class="h-full bg-neon-cyan w-[85%] rounded-full"></div></div>
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">SQL</span><span class="text-neon-cyan font-mono">90%</span></div>
+                        <div class="h-1 bg-cyber-black rounded-full"><div class="h-full bg-neon-cyan w-[90%] rounded-full"></div></div>
+                    </div>
+                </div>
+                
+                <!-- Automation -->
+                <div class="bento-card rounded-2xl p-6 reveal" style="transition-delay: 0.1s;">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-neon-green rounded-full"></span>
+                        Automation
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">Selenium</span>
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">Cypress</span>
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">Playwright</span>
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">RestAssured</span>
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">Appium</span>
+                        <span class="px-3 py-1 bg-neon-green/10 border border-neon-green/30 rounded text-xs font-mono text-neon-green">Ranorex</span>
+                    </div>
+                </div>
+                
+                <!-- DevOps -->
+                <div class="bento-card rounded-2xl p-6 reveal" style="transition-delay: 0.2s;">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-neon-purple rounded-full"></span>
+                        DevOps & CI/CD
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs font-mono text-neon-purple">Jenkins</span>
+                        <span class="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs font-mono text-neon-purple">GitHub Actions</span>
+                        <span class="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs font-mono text-neon-purple">Docker</span>
+                        <span class="px-3 py-1 bg-neon-purple/10 border border-neon-purple/30 rounded text-xs font-mono text-neon-purple">Azure</span>
+                    </div>
+                </div>
+                
+                <!-- AI & Performance -->
+                <div class="bento-card rounded-2xl p-6 reveal" style="transition-delay: 0.3s;">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-neon-yellow rounded-full"></span>
+                        AI & Performance
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-neon-yellow/10 border border-neon-yellow/30 rounded text-xs font-mono text-neon-yellow">LangChain</span>
+                        <span class="px-3 py-1 bg-neon-yellow/10 border border-neon-yellow/30 rounded text-xs font-mono text-neon-yellow">RAG</span>
+                        <span class="px-3 py-1 bg-neon-yellow/10 border border-neon-yellow/30 rounded text-xs font-mono text-neon-yellow">JMeter</span>
+                        <span class="px-3 py-1 bg-neon-yellow/10 border border-neon-yellow/30 rounded text-xs font-mono text-neon-yellow">Grafana</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS SECTION (Complete with Your Repos) -->
+    <section class="py-20 px-6 bg-cyber-dark/50" id="projects">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 reveal">
+                <span class="text-neon-cyan font-mono text-lg block mb-2">04.</span>
+                Featured Projects
+            </h2>
+            <p class="text-gray-400 mb-12 max-w-2xl reveal">A collection of my open-source automation frameworks and testing tools. Each repository represents production-ready solutions for scalable test automation.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+                <!-- Project 1: SeleniumMavenFramework -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal">
+                    <div class="h-48 bg-gradient-to-br from-orange-500/20 to-red-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🧪</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">SeleniumMavenFramework</h3>
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-mono rounded">Java</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Production-grade Selenium Test Automation framework built on Maven. Features Page Object Model, TestNG integration, and Extent Reports.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> Star</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 2: CypressAutomation -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal" style="transition-delay: 0.1s;">
+                    <div class="h-48 bg-gradient-to-br from-yellow-500/20 to-green-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">⚡</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">CypressAutomation</h3>
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-mono rounded">JavaScript</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Modern Cypress Automation Framework with Cucumber BDD integration. Includes custom commands, fixtures, and parallel execution support.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> Star</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 3: CucumberAppiumFramework -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal" style="transition-delay: 0.2s;">
+                    <div class="h-48 bg-gradient-to-br from-green-500/20 to-teal-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">📱</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">CucumberAppiumFramework</h3>
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-mono rounded">Java</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Mobile Test Automation Framework combining Cucumber BDD with Appium. Supports both iOS and Android with Gherkin syntax for readable tests.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> Star</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 4: CodeceptJS_AppiumFramework -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal" style="transition-delay: 0.3s;">
+                    <div class="h-48 bg-gradient-to-br from-purple-500/20 to-pink-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🤖</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">CodeceptJS_AppiumFramework</h3>
+                            <span class="px-2 py-1 bg-yellow-500/20 text-yellow-400 text-xs font-mono rounded">JavaScript</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Demo CodeceptJS Framework using Cucumber and Appium. Demonstrates behavior-driven development for mobile testing with easy-to-read syntax.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1">⭐ 1</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 5: PythonSeleniumFramework -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal" style="transition-delay: 0.4s;">
+                    <div class="h-48 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🐍</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">PythonSeleniumFramework</h3>
+                            <span class="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs font-mono rounded">Python</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Python project covering basic and advanced Selenium features. Includes pytest integration, page object model, and allure reporting.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> Star</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project 6: PetStoreAPI -->
+                <div class="project-card bento-card rounded-2xl overflow-hidden group reveal" style="transition-delay: 0.5s;">
+                    <div class="h-48 bg-gradient-to-br from-orange-500/20 to-yellow-500/20 relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <span class="text-6xl">🛍️</span>
+                        </div>
+                        <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
+                            <a href="#" class="px-4 py-2 bg-neon-cyan text-cyber-black font-mono text-sm rounded-full font-bold hover:scale-110 transition-transform">View Code</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-white group-hover:text-neon-cyan transition-colors">PetStoreAPI</h3>
+                            <span class="px-2 py-1 bg-orange-500/20 text-orange-400 text-xs font-mono rounded">Java</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Comprehensive API testing project for PetStore Swagger API. Demonstrates RestAssured capabilities with CRUD operations and schema validation.</p>
+                        <div class="flex items-center justify-between text-xs font-mono text-gray-500">
+                            <div class="flex gap-4">
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg> Star</span>
+                                <span class="flex items-center gap-1"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Fork</span>
+                            </div>
+                            <span>Public</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECT IDEAS SECTION -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 reveal">
+                <span class="text-neon-cyan font-mono text-lg block mb-2">04.1</span>
+                Project Ideas Pipeline
+            </h2>
+            <p class="text-gray-400 mb-12 max-w-2xl reveal">Cutting-edge automation projects I'm currently developing or planning to build. These represent the future of QA engineering.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Idea 1: AI Test Healer -->
+                <div class="bento-card rounded-2xl p-8 border border-neon-purple/30 reveal">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-full bg-neon-purple/20 flex items-center justify-center text-2xl">🧠</div>
+                        <span class="px-3 py-1 bg-neon-purple/20 text-neon-purple text-xs font-mono rounded-full">In Development</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">AI-Powered Test Auto-Healer</h3>
+                    <p class="text-gray-400 text-sm mb-4">Machine learning system that detects flaky tests and automatically suggests fixes using pattern recognition from historical test data.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Python</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">TensorFlow</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Selenium</span>
+                    </div>
+                </div>
+
+                <!-- Idea 2: Visual Regression AI -->
+                <div class="bento-card rounded-2xl p-8 border border-neon-cyan/30 reveal" style="transition-delay: 0.1s;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-full bg-neon-cyan/20 flex items-center justify-center text-2xl">👁️</div>
+                        <span class="px-3 py-1 bg-neon-cyan/20 text-neon-cyan text-xs font-mono rounded-full">Planning</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Intelligent Visual Regression</h3>
+                    <p class="text-gray-400 text-sm mb-4">Computer vision-based visual testing that ignores dynamic content (ads, timestamps) while catching real UI bugs using OpenCV.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">OpenCV</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Python</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Playwright</span>
+                    </div>
+                </div>
+
+                <!-- Idea 3: Infrastructure as Code Tester -->
+                <div class="bento-card rounded-2xl p-8 border border-neon-green/30 reveal" style="transition-delay: 0.2s;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-full bg-neon-green/20 flex items-center justify-center text-2xl">🏗️</div>
+                        <span class="px-3 py-1 bg-neon-green/20 text-neon-green text-xs font-mono rounded-full">Planning</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Terraform Testing Framework</h3>
+                    <p class="text-gray-400 text-sm mb-4">Comprehensive testing suite for Infrastructure as Code using Terraform. Validates security compliance and cost optimization before deployment.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Go</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Terraform</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">OPA</span>
+                    </div>
+                </div>
+
+                <!-- Idea 4: Contract Testing Platform -->
+                <div class="bento-card rounded-2xl p-8 border border-neon-yellow/30 reveal" style="transition-delay: 0.3s;">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-full bg-neon-yellow/20 flex items-center justify-center text-2xl">📋</div>
+                        <span class="px-3 py-1 bg-neon-yellow/20 text-neon-yellow text-xs font-mono rounded-full">Planning</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">PACT Contract Testing Hub</h3>
+                    <p class="text-gray-400 text-sm mb-4">Centralized contract testing platform with web UI for managing microservices contracts across distributed systems.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Java</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">Spring Boot</span>
+                        <span class="text-xs font-mono px-2 py-1 bg-cyber-black rounded text-gray-400">PACT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section class="py-20 px-6 bg-cyber-dark/50" id="contact">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 reveal">
+                <span class="text-neon-cyan font-mono text-lg block mb-2">05.</span>
+                Get In Touch
+            </h2>
+            <p class="text-gray-400 mb-12 text-lg reveal">I'm currently looking for new opportunities. Whether you have a question or just want to say hi, my inbox is always open!</p>
+            
+            <div class="bento-card rounded-2xl p-8 md:p-12 reveal">
+                <div class="grid md:grid-cols-2 gap-8 mb-8">
+                    <a href="mailto:baris.perveroglu@email.com" class="group flex flex-col items-center p-6 rounded-xl bg-cyber-black/50 border border-white/5 hover:border-neon-cyan/50 transition-all">
+                        <div class="w-12 h-12 rounded-full bg-neon-cyan/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-neon-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <span class="text-white font-mono font-bold">Email</span>
+                        <span class="text-gray-500 text-sm mt-1">baris.perveroglu@email.com</span>
+                    </a>
+                    
+                    <a href="https://www.linkedin.com/in/barisperveroglu/" target="_blank" class="group flex flex-col items-center p-6 rounded-xl bg-cyber-black/50 border border-white/5 hover:border-neon-cyan/50 transition-all">
+                        <div class="w-12 h-12 rounded-full bg-neon-cyan/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-neon-cyan" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        </div>
+                        <span class="text-white font-mono font-bold">LinkedIn</span>
+                        <span class="text-gray-500 text-sm mt-1">/in/barisperveroglu</span>
+                    </a>
+                </div>
+                
+                <a href="https://github.com/barispe" target="_blank" 
+                   class="inline-flex items-center gap-3 px-8 py-4 bg-neon-cyan text-cyber-black font-bold font-mono rounded-lg hover:bg-neon-green transition-colors group">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                    View GitHub Profile
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="font-mono text-sm text-gray-500">
+                © 2024 Barış Perveroğlu. All rights reserved.
+            </div>
+            <div class="flex gap-6 font-mono text-sm">
+                <a href="https://github.com/barispe" target="_blank" class="text-gray-500 hover:text-neon-cyan transition-colors">GitHub</a>
+                <a href="https://www.linkedin.com/in/barisperveroglu/" target="_blank" class="text-gray-500 hover:text-neon-cyan transition-colors">LinkedIn</a>
+                <a href="mailto:baris.perveroglu@email.com" class="text-gray-500 hover:text-neon-cyan transition-colors">Email</a>
+            </div>
+            <div class="font-mono text-xs text-gray-600">
+                Designed & Built with 💻 and ☕
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+            
+            cursorDot.style.left = `${posX}px`;
+            cursorDot.style.top = `${posY}px`;
+            
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+        
+        // Hover effect for cursor
+        const interactiveElements = document.querySelectorAll('a, button, .project-card, .bento-card');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursorOutline.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursorOutline.classList.remove('hover'));
+        });
+        
+        // Scroll Progress Bar
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById('progressBar').style.width = scrolled + "%";
+        });
+        
+        // Scroll Reveal Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        
+        // Typing Effect for Terminal (Simplified for performance)
+        const terminalTexts = document.querySelectorAll('#terminal-text > div');
+        let delay = 0;
+        terminalTexts.forEach((text, index) => {
+            text.style.opacity = '0';
+            setTimeout(() => {
+                text.style.opacity = '1';
+                text.style.transition = 'opacity 0.3s';
+            }, delay);
+            delay += 300;
+        });
+    </script>
+</body>
+</html>
